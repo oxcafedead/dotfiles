@@ -1,6 +1,5 @@
 call plug#begin(stdpath('data') . '/plugged')
 " LSP Support
-Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'L3MON4D3/LuaSnip'
@@ -20,10 +19,9 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'ThePrimeagen/vim-be-good'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'puremourning/vimspector'
-Plug 'BlackLight/nvim-http'
 Plug 'terrortylor/nvim-comment'
 Plug 'folke/todo-comments.nvim'
-
+Plug 'rest-nvim/rest.nvim'
 " Tests
 Plug 'vim-test/vim-test'
 "Coverage
@@ -32,26 +30,19 @@ Plug 'google/vim-coverage'
 Plug 'google/vim-glaive'
 call plug#end()
 
+" Visual and UI / mappings
+
 set number
 set relativenumber
 set nowrap
 
 lua << EOF
 require("catppuccin").setup({
-	flavour = "frappe", -- latte, frappe, macchiato, mocha
-        background = { -- :h background
-	        light = "latte",
-		dark = "mocha",
-	},
-	transparent_background = false, 
-	dim_inactive = {
-		enabled = false, -- dims the background color of inactive window
-		shade = "dark",
-		percentage = 0.15, -- percentage of the shade to apply to the inactive window
-	},
+	flavour = "frappe", 
+	transparent_background = true, 
 })
 EOF
-" colorscheme catppuccin
+colorscheme catppuccin
 
 inoremap jk <esc>
 
@@ -65,70 +56,75 @@ vnoremap <A-j> :m '>+1<CR>gv=gv
 vnoremap <A-k> :m '<-2<CR>gv=gv
 
 nnoremap <leader>s :%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>
-"same but for visual mode:
+" same but for visual mode:
 vnoremap <leader>s y:%s/\V<C-R>=escape(@",'/\')<CR>/<C-R>"/g<Left><Left>
 
 nnoremap <leader>y "+y
 nnoremap <leader>Y "+Y
+nnoremap <leader>p "+p
+nnoremap <leader>P "+P
+
+" Language support, refactoring...
 
 lua << EOF
 -- Treesitter
 require'nvim-treesitter.configs'.setup {
-	ensure_installed = { "c", "java", "javascript", "lua", "vim", "vimdoc", "query" },
+	ensure_installed = { "c", "java", "javascript", "lua", "vim", "vimdoc", "query", "http", "json" },
 	auto_install = true,
 	highlight = {
 		enable = true,
 	},
 }
 -- Tree sitter file structure
-require("aerial").setup({
--- optionally use on_attach to set keymaps when aerial has attached to a buffer
-on_attach = function(bufnr)
--- Jump forwards/backwards with '{' and '}'
-vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
-vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
-end,
-})
+require'aerial'.setup {
+	-- optionally use on_attach to set keymaps when aerial has attached to a buffer
+	on_attach = function(bufnr)
+	-- Jump forwards/backwards with '{' and '}'
+	vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
+	vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
+	end,
+}
 -- You probably also want to set a keymap to toggle aerial
 vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
 -- LSP
 local lsp_zero = require('lsp-zero')
-lsp_zero.on_attach(function(client, bufnr)
-lsp_zero.default_keymaps({buffer = bufnr})
-end)
-require('mason').setup({})
-require('mason-lspconfig').setup({
-ensure_installed = {'tsserver', 'eslint', 'rust_analyzer', 'jsonls', 'vimls', 'pyright'},
-handlers = {
-	lsp_zero.default_setup,
+lsp_zero.on_attach(function(client, bufnr) lsp_zero.default_keymaps({buffer = bufnr}) end)
+require'mason'.setup {}
+require'mason-lspconfig'.setup {
+	ensure_installed = {'tsserver', 'eslint', 'rust_analyzer', 'jsonls', 'vimls', 'pyright'},
+	handlers = {
+		lsp_zero.default_setup,
 	},
-})
+}
 -- vim.lsp.set_log_level("debug")
 
 -- Never request typescript-language-server for formatting
 vim.lsp.buf.format {
 	filter = function(client) return client.name ~= "tsserver" end
 }
+require('nvim_comment').setup()
+require('todo-comments').setup()
+
+
 -- Telescope
 
-require('telescope').setup{
-defaults = {
-	vimgrep_arguments = {
-		'rg',
-		'--color=never',
-		'--no-heading',
-		'--with-filename',
-		'--line-number',
-		'--column',
-		'--smart-case',
-		'--hidden',
-	},
-}
-}
+require'telescope'.setup {
+	defaults = {
+		vimgrep_arguments = {
+			'rg',
+			'--color=never',
+			'--no-heading',
+			'--with-filename',
+			'--line-number',
+			'--column',
+			'--smart-case',
+			'--hidden',
+			},
+		}
+	}
 EOF
 
 " Formatting
-"autocmd FileType python noremap <buffer> <F3> :call Autopep8()<CR>
 let g:autopep8_disable_show_diff=1
 augroup autopep8
      autocmd!
@@ -136,15 +132,21 @@ augroup autopep8
 augroup END
 
 " Debugger func...
-let g:vimspector_enable_mappings = 'VISUAL_STUDIO'
+" let g:vimspector_enable_mappings = 'HUMAN'
+nmap <F5> <Plug>VimspectorContinue
+nmap <Leader>di <Plug>VimspectorBalloonEval
+xmap <Leader>di <Plug>VimspectorBalloonEval
+nmap <F6> <Plug>VimspectorStop
+nmap <F9> <Plug>VimspectorToggleBreakpoint
+nmap <Leader><F9> <Plug>VimspectorToggleConditionalBreakpoint
+nmap <F10> <Plug>VimspectorStepOver
+nmap <F11> <Plug>VimspectorStepInto
+nmap <F12> <Plug>VimspectorStepOut
 
-" Python 3 idiotic stuff
-let g:python3_host_prog = '/usr/bin/python3'
 
 " Tests
 nmap <silent> <leader>t :TestNearest<CR>
 nmap <silent> <leader>T :TestFile<CR>
-let test#python#runner = 'pyunit'
 
 " Also add Glaive, which is used to configure coverage's maktaba flags. See
 " `:help :Glaive` for usage.
@@ -176,8 +178,8 @@ endfunction
 
 command! -nargs=? JsDesc :call JsDescFunction(<q-args>)
 
-" Etc
-lua << EOF
-require('nvim_comment').setup()
-require('todo-comments').setup()
-EOF
+" Python 3 idiotic stuff
+let g:python3_host_prog = '/usr/bin/python3'
+
+" Rest client
+nm <leader>rr <Plug>RestNvim

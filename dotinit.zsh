@@ -2,7 +2,7 @@
 
 # prerequisites: stow, zsh, nvim > 0.9
 
-STOW_FOLDERS="nvim,zsh"
+STOW_FOLDERS="nvim,zsh,tmux"
 DOTFILES="$HOME/.dotfiles"
 
 pushd $DOTFILES
