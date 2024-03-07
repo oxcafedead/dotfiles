@@ -131,6 +131,19 @@ augroup autopep8
      autocmd BufWritePre *.py Autopep8
 augroup END
 
+lua << EOF
+_G.lsp_organize_imports = function()
+local params = {
+	command = "_typescript.organizeImports",
+	arguments = {vim.api.nvim_buf_get_name(0)},
+	title = ""
+}
+vim.lsp.buf.execute_command(params)
+end
+EOF
+
+command! LspOrganize lua lsp_organize_imports()
+
 " Debugger func...
 " let g:vimspector_enable_mappings = 'HUMAN'
 nmap <F5> <Plug>VimspectorContinue
@@ -183,3 +196,4 @@ let g:python3_host_prog = '/usr/bin/python3'
 
 " Rest client
 nm <leader>rr <Plug>RestNvim
+
