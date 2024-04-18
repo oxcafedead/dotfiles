@@ -11,11 +11,20 @@ autoload -Uz compinit
 autoload -U colors && colors
 PS1='%~: '
 
+# Only for WSL
+if [ -f /etc/wsl.conf ]; then
+	notify-send() {
+		wsl-notify-send.exe --category "$WSL_DISTRO_NAME" "Command has completed"
+	}
+fi
+
 source /usr/share/zsh-antigen/antigen.zsh
 antigen bundle jeffreytse/zsh-vi-mode
+antigen bundle "MichaelAquilina/zsh-auto-notify"
 antigen apply
 
 ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
+
 
 # Add ~/.local/bin to the path
 export PATH=$HOME/.local/bin:$PATH

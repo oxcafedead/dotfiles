@@ -14,6 +14,7 @@ Plug 'nvim-treesitter/nvim-treesitter', {'tag': 'v0.9.2'}
 Plug 'stevearc/aerial.nvim', {'tag': 'v1.4.0'}
 Plug 'github/copilot.vim'
 Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
+Plug 'rose-pine/neovim', { 'as': 'rose-pine' }
 Plug 'BurntSushi/ripgrep'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'ThePrimeagen/vim-be-good'
@@ -41,8 +42,10 @@ require("catppuccin").setup({
 	flavour = "frappe", 
 	transparent_background = true, 
 })
+-- require("rose-pine").setup({ disable_background = false })
 EOF
-colorscheme catppuccin
+" colorscheme catppuccin
+colorscheme rose-pine
 
 inoremap jk <esc>
 
@@ -99,9 +102,8 @@ require'mason-lspconfig'.setup {
 -- vim.lsp.set_log_level("debug")
 
 -- Never request typescript-language-server for formatting
-vim.lsp.buf.format {
-	filter = function(client) return client.name ~= "tsserver" end
-}
+local lspconfig = require"lspconfig"
+ 
 require('nvim_comment').setup()
 require('todo-comments').setup()
 
@@ -130,6 +132,11 @@ augroup autopep8
      autocmd!
      autocmd BufWritePre *.py Autopep8
 augroup END
+augroup autoeslint
+	autocmd!
+	autocmd BufWritePre *.js if filereadable(".eslintrc.json") | EslintFixAll
+augroup END
+
 
 lua << EOF
 _G.lsp_organize_imports = function()
@@ -196,4 +203,10 @@ let g:python3_host_prog = '/usr/bin/python3'
 
 " Rest client
 nm <leader>rr <Plug>RestNvim
+
+" Copilot
+autocmd BufRead,BufNewFile *.env set ft=env
+let g:copilot_filetypes = {
+			\ 'env': v:false,
+			\ }
 
