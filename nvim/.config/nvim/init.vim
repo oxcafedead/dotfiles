@@ -10,19 +10,19 @@ Plug 'VonHeikemen/lsp-zero.nvim', {'branch': 'v3.x'}
 Plug 'tell-k/vim-autopep8'
 " Etc
 Plug 'tpope/vim-fugitive'
-Plug 'nvim-treesitter/nvim-treesitter', {'tag': 'v0.9.2'}
+Plug 'nvim-treesitter/nvim-treesitter', {'tag': '*' }
 Plug 'stevearc/aerial.nvim', {'tag': 'v1.4.0'}
 Plug 'github/copilot.vim'
 Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 Plug 'rose-pine/neovim', { 'as': 'rose-pine' }
 Plug 'BurntSushi/ripgrep'
-Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-lua/plenary.nvim', {'tag': 'v0.1.4'}
 Plug 'ThePrimeagen/vim-be-good'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'puremourning/vimspector'
 Plug 'terrortylor/nvim-comment'
 Plug 'folke/todo-comments.nvim'
-Plug 'rest-nvim/rest.nvim'
+Plug 'rest-nvim/rest.nvim', {'tag': 'v1.2.1'}
 " Tests
 Plug 'vim-test/vim-test'
 "Coverage
@@ -210,3 +210,13 @@ let g:copilot_filetypes = {
 			\ 'env': v:false,
 			\ }
 
+" Clipboard hacks
+" if win32yank.exe is available in $PATH
+if executable('win32yank.exe')
+	let g:clipboard = {
+				\'name': 'win32yank', 
+				\ 'copy': { '+': 'win32yank.exe -i --crlf', '*': 'win32yank.exe -i --crlf', }, 
+				\ 'paste': { '+': 'win32yank.exe -o --lf', '*': 'win32yank.exe -o --lf', }, 
+				\ 'cache_enabled': 0,
+				\}
+endif

@@ -3,7 +3,7 @@
 # prerequisites: stow, zsh, nvim > 0.9
 
 STOW_FOLDERS="nvim,zsh,tmux"
-DOTFILES="$HOME/.dotfiles"
+DOTFILES=$HOME/.dotfiles
 
 pushd $DOTFILES
 for folder in $(echo $STOW_FOLDERS | sed "s/,/ /g")
