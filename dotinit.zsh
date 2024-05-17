@@ -9,6 +9,6 @@ pushd $DOTFILES
 for folder in $(echo $STOW_FOLDERS | sed "s/,/ /g")
 do
 	stow -Dv $folder
-	stow -v $folder
+	stow --no-folding -v $folder
 done
 popd
