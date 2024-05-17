@@ -23,6 +23,9 @@ Plug 'puremourning/vimspector'
 Plug 'terrortylor/nvim-comment'
 Plug 'folke/todo-comments.nvim'
 Plug 'rest-nvim/rest.nvim', {'tag': 'v1.2.1'}
+Plug 'michaelb/sniprun', { 'tag': '*', 'do': 'sh ./install.sh' }
+Plug 'elzr/vim-json'
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npx --yes yarn install', 'tag': '*' }
 " Tests
 Plug 'vim-test/vim-test'
 "Coverage
@@ -129,8 +132,8 @@ EOF
 " Formatting
 let g:autopep8_disable_show_diff=1
 augroup autopep8
-     autocmd!
-     autocmd BufWritePre *.py Autopep8
+	autocmd!
+	autocmd BufWritePre *.py if filereadable(".pep8") | Autopep8
 augroup END
 augroup autoeslint
 	autocmd!
@@ -220,3 +223,14 @@ if executable('win32yank.exe')
 				\ 'cache_enabled': 0,
 				\}
 endif
+
+lua << EOF
+require("rest-nvim").setup({
+skip_ssl_verification = true,
+})
+EOF
+
+let g:vim_json_syntax_conceal = 0
+
+" Spelling! Very important for such people like me who can't spell
+autocmd BufRead,BufNewFile *.md,COMMIT_EDITMSG setlocal spell spelllang=en_us
