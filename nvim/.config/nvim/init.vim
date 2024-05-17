@@ -11,12 +11,12 @@ Plug 'tell-k/vim-autopep8'
 " Etc
 Plug 'tpope/vim-fugitive'
 Plug 'nvim-treesitter/nvim-treesitter', {'tag': '*' }
-Plug 'stevearc/aerial.nvim', {'tag': 'v1.4.0'}
+Plug 'stevearc/aerial.nvim', {'tag': '*' }
 Plug 'github/copilot.vim'
 Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 Plug 'rose-pine/neovim', { 'as': 'rose-pine' }
 Plug 'BurntSushi/ripgrep'
-Plug 'nvim-lua/plenary.nvim', {'tag': 'v0.1.4'}
+Plug 'nvim-lua/plenary.nvim', {'tag': '*'}
 Plug 'ThePrimeagen/vim-be-good'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'puremourning/vimspector'
