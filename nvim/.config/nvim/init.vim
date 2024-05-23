@@ -11,7 +11,7 @@ Plug 'tell-k/vim-autopep8'
 " Etc
 Plug 'tpope/vim-fugitive'
 Plug 'nvim-treesitter/nvim-treesitter', {'tag': '*' }
-Plug 'stevearc/aerial.nvim', {'tag': '*' }
+"Plug 'stevearc/aerial.nvim', {'tag': 'v1.6.0' } " reverted to a better version
 Plug 'github/copilot.vim'
 Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 Plug 'rose-pine/neovim', { 'as': 'rose-pine' }
@@ -22,7 +22,7 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'puremourning/vimspector'
 Plug 'terrortylor/nvim-comment'
 Plug 'folke/todo-comments.nvim'
-Plug 'rest-nvim/rest.nvim', {'tag': 'v1.2.1'}
+Plug 'rest-nvim/rest.nvim', {'tag': 'v1.2.1'} " reverted to a better version
 Plug 'michaelb/sniprun', { 'tag': '*', 'do': 'sh ./install.sh' }
 Plug 'elzr/vim-json'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npx --yes yarn install', 'tag': '*' }
@@ -82,16 +82,16 @@ require'nvim-treesitter.configs'.setup {
 	},
 }
 -- Tree sitter file structure
-require'aerial'.setup {
-	-- optionally use on_attach to set keymaps when aerial has attached to a buffer
-	on_attach = function(bufnr)
-	-- Jump forwards/backwards with '{' and '}'
-	vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
-	vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
-	end,
-}
+-- require'aerial'.setup {
+-- 	-- optionally use on_attach to set keymaps when aerial has attached to a buffer
+-- 	on_attach = function(bufnr)
+-- 	-- Jump forwards/backwards with '{' and '}'
+-- 	vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
+-- 	vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
+-- 	end,
+-- }
 -- You probably also want to set a keymap to toggle aerial
-vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
+-- vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
 -- LSP
 local lsp_zero = require('lsp-zero')
 lsp_zero.on_attach(function(client, bufnr) lsp_zero.default_keymaps({buffer = bufnr}) end)
@@ -112,21 +112,24 @@ require('todo-comments').setup()
 
 
 -- Telescope
+local telescope = require("telescope")
+local telescopeConfig = require("telescope.config")
 
-require'telescope'.setup {
+local vimgrep_arguments = { unpack(telescopeConfig.values.vimgrep_arguments) }
+table.insert(vimgrep_arguments, "--hidden")
+-- I don't want to search in the `.git` directory.
+table.insert(vimgrep_arguments, "--glob")
+table.insert(vimgrep_arguments, "!**/.git/*")
+telescope.setup {
 	defaults = {
-		vimgrep_arguments = {
-			'rg',
-			'--color=never',
-			'--no-heading',
-			'--with-filename',
-			'--line-number',
-			'--column',
-			'--smart-case',
-			'--hidden',
-			},
-		}
-	}
+		vimgrep_arguments = vimgrep_arguments,
+	},
+	pickers = {
+		find_files = {
+			find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*", },
+		},
+	},	
+}
 EOF
 
 " Formatting
