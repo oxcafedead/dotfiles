@@ -115,14 +115,20 @@ require('todo-comments').setup()
 local telescope = require("telescope")
 local telescopeConfig = require("telescope.config")
 
-local vimgrep_arguments = { unpack(telescopeConfig.values.vimgrep_arguments) }
-table.insert(vimgrep_arguments, "--hidden")
--- I don't want to search in the `.git` directory.
-table.insert(vimgrep_arguments, "--glob")
-table.insert(vimgrep_arguments, "!**/.git/*")
 telescope.setup {
 	defaults = {
-		vimgrep_arguments = vimgrep_arguments,
+		vimgrep_arguments = {
+			'rg',
+			'--color=never',
+			'--no-heading',
+			'--with-filename',
+			'--line-number',
+			'--column',
+			'--smart-case',
+			'--hidden',
+			'--glob',
+			'!**/.git/*',
+		},
 	},
 	pickers = {
 		find_files = {
