@@ -1,0 +1,91 @@
+{
+	"$schema": "https://puremourning.github.io/vimspector/schema/vimspector.schema.json#",
+	"configurations": {
+		"Python file: Launch": {
+			"adapter": "debugpy",
+			"filetypes": [
+				"python"
+			],
+			"configuration": {
+				"name": "Python file: Launch",
+				"type": "python",
+				"request": "launch",
+				"cwd": "${cwd}",
+				"python": "python3",
+				"stopOnEntry": true,
+				"console": "externalTerminal",
+				"debugOptions": [],
+				"program": "${file}",
+				"args": [
+					"*${args}"
+				]
+			},
+			"breakpoints": {
+				"exception": {
+					"all": "N",
+					"uncaught": "N"
+				}
+			}
+		},
+		"Nodejs file: Launch": {
+			"adapter": "js-debug",
+			"filetypes": [
+				"javascript",
+				"javascriptreact",
+				"typescript",
+				"typescriptreact"
+			],
+			"configuration": {
+				"name": "Nodejs file: Launch",
+				"type": "pwa-node",
+				"request": "launch",
+				"cwd": "${cwd}",
+				"stopOnEntry": true,
+				"console": "externalTerminal",
+				"program": "${file}",
+				"args": [
+					"*${args}"
+				]
+			},
+			"breakpoints": {
+				"exception": {
+					"all": "N",
+					"uncaught": "N"
+				}
+			}
+		},
+		"Vitest: Debug current test file": {
+			"adapter": "js-debug",
+			"filetypes": [
+				"javascript",
+				"javascriptreact",
+				"typescript",
+				"typescriptreact"
+			],
+			"configuration": {
+				"type": "pwa-node",
+				"request": "launch",
+				"name": "Debug Current Test File",
+				"autoAttachChildProcesses": true,
+				"skipFiles": [
+					"<node_internals>/**",
+					"**/node_modules/**"
+				],
+				"program": "./node_modules/vitest/vitest.mjs",
+				"cwd": "${cwd}",
+				"args": [
+					"run",
+					"${file}"
+				],
+				"smartStep": true,
+				"console": "externalTerminal"
+			},
+			"breakpoints": {
+				"exception": {
+					"all": "N",
+					"uncaught": "N"
+				}
+			}
+		}
+	}
+}
