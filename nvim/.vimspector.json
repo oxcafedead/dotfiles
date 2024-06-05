@@ -27,6 +27,21 @@
 				}
 			}
 		},
+		"Python file: Attach": {
+			"adapter": "multi-session",
+			"filetypes": [
+				"python"
+			],
+			"configuration": {
+				"request": "attach"
+			},
+			"breakpoints": {
+				"exception": {
+					"all": "N",
+					"uncaught": "N"
+				}
+			}
+		},
 		"Nodejs file: Launch": {
 			"adapter": "js-debug",
 			"filetypes": [
@@ -79,6 +94,30 @@
 				],
 				"smartStep": true,
 				"console": "externalTerminal"
+			},
+			"breakpoints": {
+				"exception": {
+					"all": "N",
+					"uncaught": "N"
+				}
+			}
+		},
+		"Nodejs inspector: Attach": {
+			"adapter": "js-debug",
+			"filetypes": [
+				"javascript",
+				"javascriptreact",
+				"typescript",
+				"typescriptreact"
+			],
+			"configuration": {
+				"request": "attach",
+				"port": 9229,
+				"cwd": "${cwd}",
+				"localRoot": "${cwd}",
+				"resolveSourceMapLocations": null,
+				"attachExistingChildren": false,
+				"autoAttachChildProcesses": false
 			},
 			"breakpoints": {
 				"exception": {

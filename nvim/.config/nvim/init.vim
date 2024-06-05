@@ -22,7 +22,6 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'puremourning/vimspector'
 Plug 'terrortylor/nvim-comment'
 Plug 'folke/todo-comments.nvim'
-Plug 'rest-nvim/rest.nvim', {'tag': 'v1.2.1'} " reverted to a better version
 Plug 'michaelb/sniprun', { 'tag': '*', 'do': 'sh ./install.sh' }
 Plug 'elzr/vim-json'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npx --yes yarn install', 'tag': '*' }
@@ -94,7 +93,9 @@ require'nvim-treesitter.configs'.setup {
 -- vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
 -- LSP
 local lsp_zero = require('lsp-zero')
-lsp_zero.on_attach(function(client, bufnr) lsp_zero.default_keymaps({buffer = bufnr}) end)
+lsp_zero.on_attach(function(client, bufnr)
+lsp_zero.default_keymaps({buffer = bufnr, preserve_mappings = false}) 
+end)
 require'mason'.setup {}
 require'mason-lspconfig'.setup {
 	ensure_installed = {'tsserver', 'eslint', 'rust_analyzer', 'jsonls', 'vimls', 'pyright'},
@@ -210,11 +211,8 @@ endfunction
 
 command! -nargs=? JsDesc :call JsDescFunction(<q-args>)
 
-" Python 3 idiotic stuff
+" Python 3 interpreter for core neovim functions
 let g:python3_host_prog = '/usr/bin/python3'
-
-" Rest client
-nm <leader>rr <Plug>RestNvim
 
 " Copilot
 autocmd BufRead,BufNewFile *.env set ft=env
@@ -233,13 +231,45 @@ if executable('win32yank.exe')
 				\}
 endif
 
-lua << EOF
-require("rest-nvim").setup({
-skip_ssl_verification = true,
-})
-EOF
-
 let g:vim_json_syntax_conceal = 0
 
 " Spelling! Very important for such people like me who can't spell
 autocmd BufRead,BufNewFile *.md,COMMIT_EDITMSG setlocal spell spelllang=en_us
+
+" Markdown preview
+nmap <leader>md <Plug>MarkdownPreviewToggle
+
+" httpYac mappings
+function! ExecYac()
+	let l:line = line('.')
+	let l:file = expand('%')
+	let l:cmd = 'httpyac ' . l:file . ' -l ' . l:line
+	let l:output = system(l:cmd)
+
+	rightbelow vnew
+	setlocal buftype=nofile
+	setlocal bufhidden=hide
+	setlocal noswapfile
+	call setline(1, split(l:output, '\n'))
+
+	let l:bufname = 'httpYac response'
+
+	" Only attempt to remove the buffer if it exists *and* is loaded"
+	if bufexists(l:bufname) && buflisted(l:bufname)
+		execute 'bdelete ' . bufnr(l:bufname)
+	endif
+
+	" Set the buffer to not modifiable and readonly
+	setlocal nomodifiable
+	setlocal readonly
+
+	" Automatically set the cursor to the first line
+	normal gg
+
+ 	if bufexists(l:bufname) && buflisted(l:bufname)
+		execute 'file' l:bufname
+	else
+		execute 'file' "httpYac\ response"
+	endif
+endfunction
+nnoremap <leader>yr :call ExecYac()<CR>
