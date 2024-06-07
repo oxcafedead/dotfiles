@@ -271,5 +271,7 @@ function! ExecYac()
 	else
 		execute 'file' "httpYac\ response"
 	endif
+	" finally, set http file type
+	set filetype=http
 endfunction
 nnoremap <leader>yr :call ExecYac()<CR>
