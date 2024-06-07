@@ -168,8 +168,7 @@ command! LspOrganize lua lsp_organize_imports()
 " let g:vimspector_enable_mappings = 'HUMAN'
 nmap <F5> <Plug>VimspectorContinue
 nmap <Leader>di <Plug>VimspectorBalloonEval
-xmap <Leader>di <Plug>VimspectorBalloonEval
-nmap <F6> <Plug>VimspectorStop
+nmap <F6> :VimspectorReset<CR>
 nmap <F9> <Plug>VimspectorToggleBreakpoint
 nmap <Leader><F9> <Plug>VimspectorToggleConditionalBreakpoint
 nmap <F10> <Plug>VimspectorStepOver
