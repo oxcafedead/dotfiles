@@ -31,6 +31,8 @@ Plug 'vim-test/vim-test'
 Plug 'google/vim-maktaba'
 Plug 'google/vim-coverage'
 Plug 'google/vim-glaive'
+
+Plug 'oxcafedead/vimyac'
 call plug#end()
 
 " Visual and UI / mappings
@@ -238,39 +240,3 @@ autocmd BufRead,BufNewFile *.md,COMMIT_EDITMSG setlocal spell spelllang=en_us
 " Markdown preview
 nmap <leader>md <Plug>MarkdownPreviewToggle
 
-" httpYac mappings
-function! ExecYac()
-	let l:line = line('.')
-	let l:file = expand('%')
-	let l:cmd = 'httpyac ' . l:file . ' -l ' . l:line
-	let l:output = system(l:cmd)
-
-	rightbelow vnew
-	setlocal buftype=nofile
-	setlocal bufhidden=hide
-	setlocal noswapfile
-	call setline(1, split(l:output, '\n'))
-
-	let l:bufname = 'httpYac response'
-
-	" Only attempt to remove the buffer if it exists *and* is loaded"
-	if bufexists(l:bufname) && buflisted(l:bufname)
-		execute 'bdelete ' . bufnr(l:bufname)
-	endif
-
-	" Set the buffer to not modifiable and readonly
-	setlocal nomodifiable
-	setlocal readonly
-
-	" Automatically set the cursor to the first line
-	normal gg
-
- 	if bufexists(l:bufname) && buflisted(l:bufname)
-		execute 'file' l:bufname
-	else
-		execute 'file' "httpYac\ response"
-	endif
-	" finally, set http file type
-	set filetype=http
-endfunction
-nnoremap <leader>yr :call ExecYac()<CR>
