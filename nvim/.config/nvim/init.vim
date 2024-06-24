@@ -219,6 +219,7 @@ let g:python3_host_prog = '/usr/bin/python3'
 autocmd BufRead,BufNewFile *.env set ft=env
 let g:copilot_filetypes = {
 			\ 'env': v:false,
+			\ 'gitcommit': v:true,
 			\ }
 
 " Clipboard hacks
