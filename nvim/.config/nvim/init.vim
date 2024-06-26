@@ -190,15 +190,13 @@ let s:covplugin = maktaba#plugin#Get('coverage')
 let s:covplugin.globals._gcov_temp_search_paths =[ './coverage']
 let s:covplugin.globals._gcov_temp_file_patterns = ['*.info']
 
-" Sandboxing
+" Useful functions of mine
 function! JsEscFunction(text) 
 	let input_text = a:text ==# '' ? getreg('+') : a:text
 	let escaped_text = substitute(input_text, '\v"|\n', '\=submatch(0) == "\"" ? "\\\"" : "\\n"', 'g') 
 	call setreg('+', escaped_text)
 	echo 'Escaped JSON string'
 endfunction
-
-command! -nargs=? JsEsc :call JsEscFunction(<q-args>)
 
 function! JsDescFunction(text)
 	let input_text = a:text ==# '' ? getreg('+') : a:text
@@ -208,7 +206,21 @@ function! JsDescFunction(text)
 	echo 'De-escaped JSON string'
 endfunction
 
+function! ExtractJwt(rawJwt)
+	let jwt = a:rawJwt ==# '' ? getreg('+') : a:rawJwt
+	" const payload = JSON.parse(atob(parts[1].replace(/_/g, '/').replace(/-/g, '+')));
+	let jwt = substitute(jwt, '_', '/', 'g')
+	let jwt = substitute(jwt, '-', '+', 'g')
+	let result = system('echo '.jwt.' | cut -d. -f2 | base64 -d')
+	echo result
+	call setreg('+', result)
+	echo '-----------------'
+	echo 'Extracted JWT payload and saved to clipboard'
+endfunction
+
+command! -nargs=? JsEsc :call JsEscFunction(<q-args>)
 command! -nargs=? JsDesc :call JsDescFunction(<q-args>)
+command! -nargs=? ExtractJwt :call ExtractJwt(<q-args>)
 
 " Python 3 interpreter for core neovim functions
 let g:python3_host_prog = '/usr/bin/python3'
