@@ -190,7 +190,7 @@ let s:covplugin = maktaba#plugin#Get('coverage')
 let s:covplugin.globals._gcov_temp_search_paths =[ './coverage']
 let s:covplugin.globals._gcov_temp_file_patterns = ['*.info']
 
-" Useful functions of mine
+" Useful functions of mine, utils
 function! JsEscFunction(text) 
 	let input_text = a:text ==# '' ? getreg('+') : a:text
 	let escaped_text = substitute(input_text, '\v"|\n', '\=submatch(0) == "\"" ? "\\\"" : "\\n"', 'g') 
@@ -218,9 +218,19 @@ function! ExtractJwt(rawJwt)
 	echo 'Extracted JWT payload and saved to clipboard'
 endfunction
 
+function! YankCurrentLineAnchor()
+	let line_number = line('.')
+	let rel_file_path = expand('%:~:.')
+	let anchor = rel_file_path.':'.line_number
+	call setreg('+', anchor)
+	echo 'Yanked ' . anchor
+endfunction
+
 command! -nargs=? JsEsc :call JsEscFunction(<q-args>)
 command! -nargs=? JsDesc :call JsDescFunction(<q-args>)
 command! -nargs=? JwtExt :call ExtractJwt(<q-args>)
+command! YankAnchor :call YankCurrentLineAnchor()
+nnoremap <leader>^ :YankAnchor<CR>
 
 " Python 3 interpreter for core neovim functions
 let g:python3_host_prog = '/usr/bin/python3'
@@ -250,4 +260,3 @@ autocmd BufRead,BufNewFile *.md,COMMIT_EDITMSG setlocal spell spelllang=en_us
 
 " Markdown preview
 nmap <leader>md <Plug>MarkdownPreviewToggle
-
