@@ -220,7 +220,7 @@ endfunction
 
 command! -nargs=? JsEsc :call JsEscFunction(<q-args>)
 command! -nargs=? JsDesc :call JsDescFunction(<q-args>)
-command! -nargs=? ExtractJwt :call ExtractJwt(<q-args>)
+command! -nargs=? JwtExt :call ExtractJwt(<q-args>)
 
 " Python 3 interpreter for core neovim functions
 let g:python3_host_prog = '/usr/bin/python3'
