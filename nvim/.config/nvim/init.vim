@@ -153,12 +153,7 @@ augroup END
 
 lua << EOF
 _G.lsp_organize_imports = function()
-local params = {
-	command = "_typescript.organizeImports",
-	arguments = {vim.api.nvim_buf_get_name(0)},
-	title = ""
-}
-vim.lsp.buf.execute_command(params)
+vim.lsp.buf.code_action { context = { only = { "source.organizeImports" } }, apply = true }
 end
 EOF
 
