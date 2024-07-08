@@ -159,7 +159,8 @@ require'conform'.setup {
 }
 EOF
 autocmd BufWritePost,BufReadPost,InsertLeave,TextChanged,TextChangedI * lua require'lint'.try_lint()
-command! Conform :lua require("conform").format({ bufnr = vim.api.nvim_get_current_buf() })
+command! Conform :lua require("conform").format({ bufnr = vim.api.nvim_get_current_buf(), lsp_format = "fallback" })
+autocmd BufWritePre * Conform
 
 " Debugger func...
 " let g:vimspector_enable_mappings = 'HUMAN'
