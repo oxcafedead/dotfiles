@@ -1,13 +1,16 @@
 call plug#begin(stdpath('data') . '/plugged')
-" LSP Support
+" LSP Support & linting
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'L3MON4D3/LuaSnip'
 Plug 'williamboman/mason.nvim'
 Plug 'williamboman/mason-lspconfig.nvim'
+Plug 'rshkarin/mason-nvim-lint'
 Plug 'neovim/nvim-lspconfig'
 Plug 'VonHeikemen/lsp-zero.nvim', {'branch': 'v3.x'}
 Plug 'tell-k/vim-autopep8'
+Plug 'mfussenegger/nvim-lint'
+Plug 'stevearc/conform.nvim'
 " Etc
 Plug 'tpope/vim-fugitive'
 Plug 'nvim-treesitter/nvim-treesitter'
@@ -46,7 +49,11 @@ require("catppuccin").setup({
 	flavour = "frappe", 
 	transparent_background = true, 
 })
--- require("rose-pine").setup({ disable_background = false })
+require("rose-pine").setup({
+styles = {
+	transparency = true,
+},
+})
 EOF
 " colorscheme catppuccin
 colorscheme rose-pine
@@ -98,15 +105,15 @@ lsp_zero.default_keymaps({buffer = bufnr, preserve_mappings = false})
 end)
 require'mason'.setup {}
 require'mason-lspconfig'.setup {
-	ensure_installed = {'tsserver', 'eslint', 'rust_analyzer', 'jsonls', 'vimls', 'pyright'},
+	ensure_installed = {'tsserver', 'rust_analyzer', 'jsonls', 'vimls', 'pyright' },
 	handlers = {
 		lsp_zero.default_setup,
 	},
 }
+require'mason-nvim-lint'.setup {
+	ensure_installed = {'eslint_d', 'ruff'},
+}
 -- vim.lsp.set_log_level("debug")
-
--- Never request typescript-language-server for formatting
-local lspconfig = require"lspconfig"
  
 require('nvim_comment').setup()
 require('todo-comments').setup()
@@ -137,27 +144,22 @@ telescope.setup {
 		},
 	},	
 }
+
+
+require'lint'.linters_by_ft = {
+	javascript = {'eslint_d'},
+	-- python = {'ruff'}, -- ruff linter automatically registers as LSP and duplicates the linting
+	sh = {'shellcheck'},
+}
+require'conform'.setup {
+	formatters_by_ft = {
+		javascript = { { "prettierd", "prettier" }, { "eslint_d", "eslint" } },
+		python = { "autopep8", "ruff_fix", "ruff_format", "ruff_organize_imports" },
+	},
+}
 EOF
-
-" Formatting
-let g:autopep8_disable_show_diff=1
-augroup autopep8
-	autocmd!
-	autocmd BufWritePre *.py if filereadable(".pep8") | Autopep8
-augroup END
-augroup autoeslint
-	autocmd!
-	autocmd BufWritePre *.js if filereadable(".eslintrc.json") | EslintFixAll
-augroup END
-
-
-lua << EOF
-_G.lsp_organize_imports = function()
-vim.lsp.buf.code_action { context = { only = { "source.organizeImports" } }, apply = true }
-end
-EOF
-
-command! LspOrganize lua lsp_organize_imports()
+autocmd BufWritePost,BufReadPost,InsertLeave,TextChanged,TextChangedI * lua require'lint'.try_lint()
+command! Conform :lua require("conform").format({ bufnr = vim.api.nvim_get_current_buf() })
 
 " Debugger func...
 " let g:vimspector_enable_mappings = 'HUMAN'
@@ -255,3 +257,7 @@ autocmd BufRead,BufNewFile *.md,COMMIT_EDITMSG setlocal spell spelllang=en_us
 
 " Markdown preview
 nmap <leader>md <Plug>MarkdownPreviewToggle
+
+" Telescope & LSP, lsp_dynamic_workspace_symbols to search for symbols in the
+" workspace
+nmap <leader>ws :Telescope lsp_dynamic_workspace_symbols<CR>
