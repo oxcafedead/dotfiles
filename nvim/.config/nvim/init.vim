@@ -151,15 +151,32 @@ require'lint'.linters_by_ft = {
 	-- python = {'ruff'}, -- ruff linter automatically registers as LSP and duplicates the linting
 	sh = {'shellcheck'},
 }
-require'conform'.setup {
+local conform = require'conform'
+conform.setup {
 	formatters_by_ft = {
 		javascript = { { "prettierd", "prettier" }, { "eslint_d", "eslint" } },
 		python = { "autopep8", "ruff_fix", "ruff_format", "ruff_organize_imports" },
 	},
 }
+vim.g.auto_conform = 1
+function Conform()
+	if vim.g.auto_conform == 1 then
+		conform.format({ bufnr = vim.api.nvim_get_current_buf(), lsp_format = "fallback" })
+	end
+end
+function ToggleAutoConform()
+	if vim.g.auto_conform == 1 then
+		vim.g.auto_conform = 0
+		print('AutoConform disabled')
+	else
+		vim.g.auto_conform = 1
+		print('AutoConform enabled')
+	end
+end
 EOF
 autocmd BufWritePost,BufReadPost,InsertLeave,TextChanged,TextChangedI * lua require'lint'.try_lint()
-command! Conform :lua require("conform").format({ bufnr = vim.api.nvim_get_current_buf(), lsp_format = "fallback" })
+command! AutoConform :lua ToggleAutoConform()
+command! Conform :lua Conform()
 autocmd BufWritePre * Conform
 
 " Debugger func...
