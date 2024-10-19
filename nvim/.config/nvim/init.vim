@@ -12,12 +12,14 @@ Plug 'tell-k/vim-autopep8'
 Plug 'mfussenegger/nvim-lint'
 Plug 'stevearc/conform.nvim'
 " Etc
+Plug 'tpope/vim-dotenv'
 Plug 'tpope/vim-fugitive'
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'stevearc/aerial.nvim', {'tag': '*'}
 Plug 'github/copilot.vim'
-Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
-Plug 'rose-pine/neovim', { 'as': 'rose-pine' }
+Plug 'LunarVim/bigfile.nvim'
+Plug 'tpope/vim-dispatch'
+" Plug 'huggingface/llm.nvim'
 Plug 'BurntSushi/ripgrep'
 Plug 'nvim-lua/plenary.nvim', {'tag': '*'}
 Plug 'ThePrimeagen/vim-be-good'
@@ -28,14 +30,18 @@ Plug 'folke/todo-comments.nvim'
 Plug 'michaelb/sniprun', { 'tag': '*', 'do': 'sh ./install.sh' }
 Plug 'elzr/vim-json'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npx --yes yarn install', 'tag': '*' }
+Plug 'oxcafedead/vimyac'
+
 " Tests
 Plug 'vim-test/vim-test'
-"Coverage
+" Coverage
 Plug 'google/vim-maktaba'
 Plug 'google/vim-coverage'
 Plug 'google/vim-glaive'
 
-Plug 'oxcafedead/vimyac'
+" Colors and visual
+Plug 'altercation/vim-colors-solarized'
+
 call plug#end()
 
 " Visual and UI / mappings
@@ -43,20 +49,8 @@ call plug#end()
 set number
 set relativenumber
 set nowrap
-
-lua << EOF
-require("catppuccin").setup({
-	flavour = "frappe", 
-	transparent_background = true, 
-})
-require("rose-pine").setup({
-styles = {
-	transparency = true,
-},
-})
-EOF
-" colorscheme catppuccin
-colorscheme rose-pine
+colorscheme solarized
+set background=light
 
 inoremap jk <esc>
 
@@ -88,6 +82,9 @@ require'nvim-treesitter.configs'.setup {
 	highlight = {
 		enable = true,
 	},
+	indent = {
+		enable = true,
+	},
 }
 require'aerial'.setup {
 	-- optionally use on_attach to set keymaps when aerial has attached to a buffer
@@ -105,13 +102,13 @@ lsp_zero.default_keymaps({buffer = bufnr, preserve_mappings = false})
 end)
 require'mason'.setup {}
 require'mason-lspconfig'.setup {
-	ensure_installed = {'tsserver', 'rust_analyzer', 'jsonls', 'vimls', 'pyright' },
+	-- ensure_installed = {'tsserver', 'rust_analyzer', 'jsonls', 'vimls', 'pyright' }, -- will be set manually
 	handlers = {
 		lsp_zero.default_setup,
 	},
 }
 require'mason-nvim-lint'.setup {
-	ensure_installed = {'eslint_d', 'ruff'},
+	-- ensure_installed = {'eslint_d', 'ruff'}, -- will be set manually
 }
 -- vim.lsp.set_log_level("debug")
  
@@ -160,16 +157,17 @@ conform.setup {
 }
 vim.g.auto_conform = 1
 function Conform()
-	if vim.g.auto_conform == 1 then
+	-- by default, also auto conform
+	if vim.b.auto_conform == 1 or ( vim.b.auto_conform == nil and vim.g.auto_conform == 1 ) then
 		conform.format({ bufnr = vim.api.nvim_get_current_buf(), lsp_format = "fallback" })
 	end
 end
 function ToggleAutoConform()
-	if vim.g.auto_conform == 1 then
-		vim.g.auto_conform = 0
+	if vim.b.auto_conform == 1 or vim.b.auto_conform == nil then
+		vim.b.auto_conform = 0
 		print('AutoConform disabled')
 	else
-		vim.g.auto_conform = 1
+		vim.b.auto_conform = 1
 		print('AutoConform enabled')
 	end
 end
@@ -279,3 +277,6 @@ nmap <leader>md <Plug>MarkdownPreviewToggle
 " Telescope & LSP, lsp_dynamic_workspace_symbols to search for symbols in the
 " workspace
 nmap <leader>ws :Telescope lsp_dynamic_workspace_symbols<CR>
+
+" Vim test stuff
+let test#strategy = "dispatch"

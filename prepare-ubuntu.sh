@@ -13,7 +13,10 @@ echo "deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:
 curl -L "https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/xUbuntu_${DISTRIB_RELEASE}/Release.key" | sudo tee /etc/apt/trusted.gpg.d/devel_kubic_libcontainers_unstable.asc > /dev/null
 
 sudo apt-get update
-sudo apt-get install neovim git zsh ripgrep python3-pip podman -y
+sudo apt-get install npm neovim git zsh ripgrep python3-pip podman \
+	python3-pynvim \
+	gcc lua5.3 \
+	-y
 
 # Install plugins manager for Neovim
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
@@ -23,9 +26,6 @@ sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 git clone https://github.com/tmux-plugins/tmux-resurrect ~/.tmux/plugins/tmux-resurrect
 git clone https://github.com/tmux-plugins/tmux-continuum ~/.tmux/plugins/tmux-continuum
-
-# Install Python needed modules
-python3 -m pip install autopep8 pylint
 
 # Change default shell to ZSH
 chsh -s $(which zsh)
