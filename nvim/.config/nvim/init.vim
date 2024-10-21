@@ -8,7 +8,6 @@ Plug 'williamboman/mason-lspconfig.nvim'
 Plug 'rshkarin/mason-nvim-lint'
 Plug 'neovim/nvim-lspconfig'
 Plug 'VonHeikemen/lsp-zero.nvim', {'branch': 'v3.x'}
-Plug 'tell-k/vim-autopep8'
 Plug 'mfussenegger/nvim-lint'
 Plug 'stevearc/conform.nvim'
 " Etc
@@ -19,17 +18,16 @@ Plug 'stevearc/aerial.nvim', {'tag': '*'}
 Plug 'github/copilot.vim'
 Plug 'LunarVim/bigfile.nvim'
 Plug 'tpope/vim-dispatch'
-" Plug 'huggingface/llm.nvim'
 Plug 'BurntSushi/ripgrep'
 Plug 'nvim-lua/plenary.nvim', {'tag': '*'}
-Plug 'ThePrimeagen/vim-be-good'
 Plug 'nvim-telescope/telescope.nvim'
-Plug 'puremourning/vimspector'
 Plug 'terrortylor/nvim-comment'
 Plug 'folke/todo-comments.nvim'
-Plug 'michaelb/sniprun', { 'tag': '*', 'do': 'sh ./install.sh' }
 Plug 'elzr/vim-json'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npx --yes yarn install', 'tag': '*' }
+" Debug
+Plug 'michaelb/sniprun', { 'tag': '*', 'do': 'sh ./install.sh' }
+Plug 'puremourning/vimspector'
 Plug 'oxcafedead/vimyac'
 
 " Tests

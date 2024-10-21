@@ -39,9 +39,6 @@ export PATH=$HOME/.local/bin:$PATH
 compinit
 # End of lines added by compinstall
 
-# Fix my keyword ls
-eval $(thefuck --alias)
-
 # SSH
 if ! pgrep -u "$USER" ssh-agent > /dev/null; then
     ssh-agent -t 1h > "$XDG_RUNTIME_DIR/ssh-agent.env"
