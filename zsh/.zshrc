@@ -43,6 +43,8 @@ compinit
 if ! pgrep -u "$USER" ssh-agent > /dev/null; then
     ssh-agent -t 1h > "$XDG_RUNTIME_DIR/ssh-agent.env"
 fi
-if [[ ! -f "$SSH_AUTH_SOCK" ]]; then
+if [[ -f "$XDG_RUNTIME_DIR/ssh-agent.env" ]]; then
     source "$XDG_RUNTIME_DIR/ssh-agent.env" >/dev/null
+else
+    echo "Error: ssh-agent.env file not found."
 fi
