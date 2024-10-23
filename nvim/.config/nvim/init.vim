@@ -108,22 +108,6 @@ require'mason-lspconfig'.setup {
 require'mason-nvim-lint'.setup {
 	-- ensure_installed = {'eslint_d', 'ruff'}, -- will be set manually
 }
-local pythonPath = 'python'
--- if venv or .venv exists, use it:
-if vim.fn.isdirectory('venv') == 1 then
-	pythonPath = 'venv/bin/python'
-elseif vim.fn.isdirectory('.venv') == 1 then
-	pythonPath = '.venv/bin/python'
-end
-require'lspconfig'.pyright.setup{
-	settings = {
-		python = {
-			pythonPath = pythonPath,
-		},
-	},
-}
--- vim.lsp.set_log_level("debug")
- 
 require('nvim_comment').setup()
 require('todo-comments').setup()
 
@@ -258,7 +242,9 @@ command! YankAnchor :call YankCurrentLineAnchor()
 nnoremap <leader>^ :YankAnchor<CR>
 
 " Python 3 interpreter for core neovim functions
-let g:python3_host_prog = '/usr/bin/python3'
+if has("python3")
+	let g:python3_host_prog = '/usr/bin/python3'
+endif
 
 " Copilot
 autocmd BufRead,BufNewFile *.env set ft=env
@@ -292,23 +278,6 @@ nmap <leader>ws :Telescope lsp_dynamic_workspace_symbols<CR>
 
 " Vim test stuff
 let test#strategy = "dispatch"
-
-" Special hacks for python tests
-function! PythonVenvTransform(cmd) abort
-	" only for python tests, we need to activate the venv
-	if a:cmd !~# 'pytest'
-		return a:cmd
-	endif
-	" seatch venv or .venv for the current project
-	let venv = finddir('venv', '.;')
-	if venv ==# ''
-		let venv = finddir('.venv', '.;')
-	endif
-	return 'source '.venv.'/bin/activate; '.a:cmd
-endfunction
-
-let g:test#custom_transformations = {'python': function('PythonVenvTransform')}
-let g:test#transformation = 'python'
 
 " Finally, exrc
 set exrc
