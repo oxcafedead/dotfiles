@@ -309,3 +309,6 @@ endfunction
 
 let g:test#custom_transformations = {'python': function('PythonVenvTransform')}
 let g:test#transformation = 'python'
+
+" Finally, exrc
+set exrc
