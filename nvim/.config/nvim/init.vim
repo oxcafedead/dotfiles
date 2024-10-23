@@ -242,9 +242,7 @@ command! YankAnchor :call YankCurrentLineAnchor()
 nnoremap <leader>^ :YankAnchor<CR>
 
 " Python 3 interpreter for core neovim functions
-if has("python3")
-	let g:python3_host_prog = '/usr/bin/python3'
-endif
+let g:python3_host_prog = '/usr/bin/python3'
 
 " Copilot
 autocmd BufRead,BufNewFile *.env set ft=env
