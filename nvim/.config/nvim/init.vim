@@ -24,7 +24,6 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'terrortylor/nvim-comment'
 Plug 'folke/todo-comments.nvim'
 Plug 'elzr/vim-json'
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npx --yes yarn install', 'tag': '*' }
 " Debug
 Plug 'michaelb/sniprun', { 'tag': '*', 'do': 'sh ./install.sh' }
 Plug 'puremourning/vimspector'
@@ -267,8 +266,48 @@ let g:vim_json_syntax_conceal = 0
 " Spelling! Very important for such people like me who can't spell
 autocmd BufRead,BufNewFile *.md,COMMIT_EDITMSG setlocal spell spelllang=en_us
 
-" Markdown preview
-nmap <leader>md <Plug>MarkdownPreviewToggle
+function! GenerateAndOpenMarkdown()
+    " Check if empedoc is executable
+    if executable('empedoc-linux-amd64') == 0
+        echo 'empedoc-linux-amd64 not found in $PATH'
+        return
+    endif
+
+    " Generate a random string for the session
+    let rand_dir = '/tmp/empedoc/' . strftime('%Y%m%d%H%M%S') . '-' . printf('%x', rand())
+
+    " Create temporary directories if they don't exist
+    if !isdirectory(rand_dir)
+        call mkdir(rand_dir, 'p')
+    endif
+    let empty_dir = rand_dir . '-empty'
+    if !isdirectory(empty_dir)
+        call mkdir(empty_dir, 'p')
+    endif
+
+    " Define the command to run empedoc
+    let preview_command = 'empedoc-linux-amd64 -o ' . rand_dir . ' -d ' . empty_dir
+    let preview_command .= ' -i ' . expand('%:t')
+
+    " Run the command
+    call system(preview_command)
+
+    " Open the generated file in the browser
+    let output_file = rand_dir . '/index.html'
+    let open_cmd = 'xdg-open'
+    if executable('wslview')
+	let open_cmd = 'wslview'
+    endif
+
+    if filereadable(output_file)
+        let final_cmd = 'silent !'.open_cmd.' ' . shellescape(output_file)
+	execute final_cmd
+	echo 'Opened preview '.final_cmd
+    else
+        echo 'Failed to generate markdown preview'
+    endif
+endfunction
+nmap <leader>md :call GenerateAndOpenMarkdown()<CR>
 
 " Telescope & LSP, lsp_dynamic_workspace_symbols to search for symbols in the
 " workspace
