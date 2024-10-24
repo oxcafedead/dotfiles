@@ -14,6 +14,9 @@ PS1='%~: '
 # Only for WSL
 if [ -f /etc/wsl.conf ]; then
 	notify-send() {
+		if ! command -v wsl-notify-send.exe &> /dev/null; then
+			return
+		fi
 		wsl-notify-send.exe --category "$WSL_DISTRO_NAME" "Command has completed"
 	}
 fi
@@ -32,10 +35,6 @@ antigen apply
 ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
 
 
-# Add ~/.local/bin to the path
-export PATH=$HOME/.local/bin:$PATH
-
-
 compinit
 # End of lines added by compinstall
 
@@ -48,3 +47,31 @@ if [[ -f "$XDG_RUNTIME_DIR/ssh-agent.env" ]]; then
 else
     echo "Error: ssh-agent.env file not found."
 fi
+
+# Python development pain here:
+# Wrap nvim command to source venv if there is venv detected in the current directory
+detect_venv_dir() {
+    if [[ "$VIRTUAL_ENV" != "" ]]; then
+	return
+    fi
+    # Use find to safely locate all activate scripts
+    venvs=( */bin/activate(N) )
+    if [[ ${#venvs} -gt 0 ]]; then
+        if [[ ${#venvs} -gt 1 ]]; then
+            echo -e "\e[33mMultiple virtualenvs detected, taking the first one\e[0m"
+        fi
+        echo "Virtualenv detected"
+	venv_dir="${venvs[1]%/bin/activate}"
+	echo "Activate venv in $venv_dir? [Y/n]"
+	read -r answer
+	if [[ -z "$answer" || "$answer" == "Y" || "$answer" == "y" ]]; then
+	    echo "Activating virtualenv $venv_dir"
+	    source "$venv_dir/bin/activate"
+	fi
+    fi
+}
+
+nvim() {
+    detect_venv_dir
+    command nvim "$@"
+}
