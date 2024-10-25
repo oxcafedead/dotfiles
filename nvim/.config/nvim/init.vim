@@ -1,3 +1,8 @@
+" netrw prewiew to 1:
+let g:netrw_banner = 0
+let g:netrw_preview   = 1
+let g:netrw_winsize   = 30
+
 call plug#begin(stdpath('data') . '/plugged')
 " LSP Support & linting
 Plug 'hrsh7th/nvim-cmp'
@@ -10,10 +15,11 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'VonHeikemen/lsp-zero.nvim', {'branch': 'v3.x'}
 Plug 'mfussenegger/nvim-lint'
 Plug 'stevearc/conform.nvim'
+Plug 'ThePrimeagen/refactoring.nvim'
 " Etc
 Plug 'tpope/vim-dotenv'
 Plug 'tpope/vim-fugitive'
-Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'stevearc/aerial.nvim', {'tag': '*'}
 Plug 'github/copilot.vim'
 Plug 'LunarVim/bigfile.nvim'
@@ -39,6 +45,8 @@ Plug 'google/vim-glaive'
 " Colors and visual
 Plug 'altercation/vim-colors-solarized'
 
+" Dispatch comiple plugin
+Plug '5long/pytest-vim-compiler'
 call plug#end()
 
 " Visual and UI / mappings
@@ -315,6 +323,12 @@ nmap <leader>ws :Telescope lsp_dynamic_workspace_symbols<CR>
 
 " Vim test stuff
 let test#strategy = "dispatch"
+
+let g:dispatch_compilers = {
+			\ 'vitest': 'jest',
+			\ 'pytest': 'pytest',
+			\ 'python -m pytest': 'pytest',
+			\ 'python3 -m pytest': 'pytest' }
 
 " Finally, exrc
 set exrc
