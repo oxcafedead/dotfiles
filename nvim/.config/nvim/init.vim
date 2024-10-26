@@ -47,6 +47,7 @@ Plug 'altercation/vim-colors-solarized'
 
 " Dispatch comiple plugin
 Plug '5long/pytest-vim-compiler'
+Plug 'oxcafedead/vitest-vim-compiler'
 call plug#end()
 
 " Visual and UI / mappings
@@ -325,7 +326,7 @@ nmap <leader>ws :Telescope lsp_dynamic_workspace_symbols<CR>
 let test#strategy = "dispatch"
 
 let g:dispatch_compilers = {
-			\ 'vitest': 'jest',
+			\ 'vitest': 'node_modules/.bin/vitest',
 			\ 'pytest': 'pytest',
 			\ 'python -m pytest': 'pytest',
 			\ 'python3 -m pytest': 'pytest' }
