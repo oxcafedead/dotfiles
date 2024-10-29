@@ -39,7 +39,7 @@ Plug 'oxcafedead/vimyac'
 Plug 'vim-test/vim-test'
 " Coverage
 Plug 'google/vim-maktaba'
-Plug 'google/vim-coverage'
+Plug 'andythigpen/nvim-coverage'
 Plug 'google/vim-glaive'
 
 " Colors and visual
@@ -197,15 +197,18 @@ nmap <F12> <Plug>VimspectorStepOut
 nmap <silent> <leader>t :TestNearest<CR>
 nmap <silent> <leader>T :TestFile<CR>
 
-" Also add Glaive, which is used to configure coverage's maktaba flags. See
-" `:help :Glaive` for usage.
-call glaive#Install()
-" Optional: Enable coverage's default mappings on the <Leader>C prefix.
-Glaive coverage plugin[mappings]
-
-let s:covplugin = maktaba#plugin#Get('coverage')
-let s:covplugin.globals._gcov_temp_search_paths =[ './coverage']
-let s:covplugin.globals._gcov_temp_file_patterns = ['*.info']
+lua << EOF
+require("coverage").setup({
+	signs = {
+		covered = { hl = "CoverageCovered", text = "✅" },
+		uncovered = { hl = "CoverageUncovered", text = "❌" },
+		partial = { hl = "CoveragePartial", text = "⚠️" },
+	},
+})
+EOF
+nmap <leader>cs :CoverageShow<CR>
+nmap <leader>cc :CoverageToggle<CR>
+nmap <leader>cl :CoverageLoad<CR>
 
 " Useful functions of mine, utils
 function! JsEscFunction(text) 
@@ -250,7 +253,7 @@ command! YankAnchor :call YankCurrentLineAnchor()
 nnoremap <leader>^ :YankAnchor<CR>
 
 " Python 3 interpreter for core neovim functions
-let g:python3_host_prog = '/usr/bin/python3'
+let g:python3_host_prog = expand('$HOME/globalvenvs/nvim/bin/python3')
 
 " Copilot
 autocmd BufRead,BufNewFile *.env set ft=env
@@ -274,49 +277,6 @@ let g:vim_json_syntax_conceal = 0
 
 " Spelling! Very important for such people like me who can't spell
 autocmd BufRead,BufNewFile *.md,COMMIT_EDITMSG setlocal spell spelllang=en_us
-
-function! GenerateAndOpenMarkdown()
-    " Check if empedoc is executable
-    if executable('empedoc-linux-amd64') == 0
-        echo 'empedoc-linux-amd64 not found in $PATH'
-        return
-    endif
-
-    " Generate a random string for the session
-    let rand_dir = '/tmp/empedoc/' . strftime('%Y%m%d%H%M%S') . '-' . printf('%x', rand())
-
-    " Create temporary directories if they don't exist
-    if !isdirectory(rand_dir)
-        call mkdir(rand_dir, 'p')
-    endif
-    let empty_dir = rand_dir . '-empty'
-    if !isdirectory(empty_dir)
-        call mkdir(empty_dir, 'p')
-    endif
-
-    " Define the command to run empedoc
-    let preview_command = 'empedoc-linux-amd64 -o ' . rand_dir . ' -d ' . empty_dir
-    let preview_command .= ' -i ' . expand('%:t')
-
-    " Run the command
-    call system(preview_command)
-
-    " Open the generated file in the browser
-    let output_file = rand_dir . '/index.html'
-    let open_cmd = 'xdg-open'
-    if executable('wslview')
-	let open_cmd = 'wslview'
-    endif
-
-    if filereadable(output_file)
-        let final_cmd = 'silent !'.open_cmd.' ' . shellescape(output_file)
-	execute final_cmd
-	echo 'Opened preview '.final_cmd
-    else
-        echo 'Failed to generate markdown preview'
-    endif
-endfunction
-nmap <leader>md :call GenerateAndOpenMarkdown()<CR>
 
 " Telescope & LSP, lsp_dynamic_workspace_symbols to search for symbols in the
 " workspace

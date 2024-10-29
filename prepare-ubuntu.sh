@@ -14,9 +14,15 @@ curl -L "https://download.opensuse.org/repositories/devel:kubic:libcontainers:un
 
 sudo apt-get update
 sudo apt-get install npm neovim git zsh ripgrep python3-pip podman \
-	python3-pynvim \
+	python3-venv \
 	gcc lua5.3 \
 	-y
+
+mkdir ~/globalvenvs
+python3 -m venv ~/globalvenvs/nvim
+source "$HOME/globalvenvs/nvim/bin/activate"
+pip install pynvim coverage=5.5
+deactivate
 
 # Install plugins manager for Neovim
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
