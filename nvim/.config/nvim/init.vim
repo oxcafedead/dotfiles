@@ -43,7 +43,7 @@ Plug 'andythigpen/nvim-coverage'
 Plug 'google/vim-glaive'
 
 " Colors and visual
-Plug 'altercation/vim-colors-solarized'
+Plug 'rose-pine/neovim'
 
 " Dispatch comiple plugin
 Plug '5long/pytest-vim-compiler'
@@ -55,8 +55,17 @@ call plug#end()
 set number
 set relativenumber
 set nowrap
-colorscheme solarized
-set background=light
+
+set termguicolors
+lua << EOF
+require('rose-pine').setup{
+	styles = {
+		italic = false,
+		transparency = false,
+	},
+}
+EOF
+colorscheme rose-pine
 
 inoremap jk <esc>
 
@@ -108,7 +117,7 @@ lsp_zero.default_keymaps({buffer = bufnr, preserve_mappings = false})
 end)
 require'mason'.setup {}
 require'mason-lspconfig'.setup {
-	-- ensure_installed = {'tsserver', 'rust_analyzer', 'jsonls', 'vimls', 'pyright' }, -- will be set manually
+	ensure_installed = {'vimls'},
 	handlers = {
 		lsp_zero.default_setup,
 	},
@@ -116,6 +125,17 @@ require'mason-lspconfig'.setup {
 require'mason-nvim-lint'.setup {
 	-- ensure_installed = {'eslint_d', 'ruff'}, -- will be set manually
 }
+require'lspconfig'.basedpyright.setup {
+	settings = {
+		basedpyright = {
+			analysis = {
+				-- turn off annoying strict mode
+				typeCheckingMode = "basic",
+			},
+		},
+	},
+}
+
 require('nvim_comment').setup()
 require('todo-comments').setup()
 
