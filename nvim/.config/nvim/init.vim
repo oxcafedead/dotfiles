@@ -45,6 +45,7 @@ Plug 'google/vim-glaive'
 " Colors and visual
 Plug 'rose-pine/neovim'
 Plug 'lifepillar/vim-solarized8', {'branch': 'neovim'}
+Plug 'f-person/auto-dark-mode.nvim'
 
 " Dispatch comiple plugin
 Plug '5long/pytest-vim-compiler'
@@ -58,16 +59,10 @@ set relativenumber
 set nowrap
 
 set termguicolors
-" lua << EOF
-" require('rose-pine').setup{
-" 	styles = {
-" 		italic = false,
-" 		transparency = false,
-" 	},
-" }
-" EOF
 colorscheme solarized8
-" colorscheme rose-pine
+lua << EOF
+require('auto-dark-mode').setup()
+EOF
 
 inoremap jk <esc>
 
