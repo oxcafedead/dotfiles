@@ -44,6 +44,7 @@ Plug 'google/vim-glaive'
 
 " Colors and visual
 Plug 'rose-pine/neovim'
+Plug 'lifepillar/vim-solarized8', {'branch': 'neovim'}
 
 " Dispatch comiple plugin
 Plug '5long/pytest-vim-compiler'
@@ -57,15 +58,16 @@ set relativenumber
 set nowrap
 
 set termguicolors
-lua << EOF
-require('rose-pine').setup{
-	styles = {
-		italic = false,
-		transparency = false,
-	},
-}
-EOF
-colorscheme rose-pine
+" lua << EOF
+" require('rose-pine').setup{
+" 	styles = {
+" 		italic = false,
+" 		transparency = false,
+" 	},
+" }
+" EOF
+colorscheme solarized8
+" colorscheme rose-pine
 
 inoremap jk <esc>
 
@@ -218,13 +220,7 @@ nmap <silent> <leader>t :TestNearest<CR>
 nmap <silent> <leader>T :TestFile<CR>
 
 lua << EOF
-require("coverage").setup({
-	signs = {
-		covered = { hl = "CoverageCovered", text = "✅" },
-		uncovered = { hl = "CoverageUncovered", text = "❌" },
-		partial = { hl = "CoveragePartial", text = "⚠️" },
-	},
-})
+require("coverage").setup({})
 EOF
 nmap <leader>cs :CoverageShow<CR>
 nmap <leader>cc :CoverageToggle<CR>
