@@ -45,7 +45,7 @@ Plug 'google/vim-glaive'
 " Colors and visual
 Plug 'rose-pine/neovim'
 Plug 'lifepillar/vim-solarized8', {'branch': 'neovim'}
-Plug 'f-person/auto-dark-mode.nvim'
+Plug 'oxcafedead/auto-dark-mode.nvim', {'branch': 'fix_reg_wsl'}
 
 " Dispatch comiple plugin
 Plug '5long/pytest-vim-compiler'
