@@ -45,7 +45,7 @@ Plug 'google/vim-glaive'
 " Colors and visual
 Plug 'rose-pine/neovim'
 Plug 'lifepillar/vim-solarized8', {'branch': 'neovim'}
-Plug 'oxcafedead/auto-dark-mode.nvim', {'branch': 'fix_reg_wsl'}
+Plug 'f-person/auto-dark-mode.nvim'
 
 " Dispatch comiple plugin
 Plug '5long/pytest-vim-compiler'
@@ -304,3 +304,13 @@ let g:dispatch_compilers = {
 
 " Finally, exrc
 set exrc
+
+function! CloseOtherBuffers()
+	let current_buffer = bufnr('%')
+	let buffers = filter(range(1, bufnr('$')), 'buflisted(v:val) && v:val != current_buffer')
+	for buffer in buffers
+		execute 'bwipeout' buffer
+	endfor
+endfunction
+
+command! CloseOtherBuffers :call CloseOtherBuffers()
