@@ -44,7 +44,7 @@ compinit
 
 # SSH
 if ! pgrep -u "$USER" ssh-agent > /dev/null; then
-    ssh-agent -t 1h > "$XDG_RUNTIME_DIR/ssh-agent.env"
+    ssh-agent > "$XDG_RUNTIME_DIR/ssh-agent.env"
     if [[ -f "$XDG_RUNTIME_DIR/ssh-agent.env" ]]; then
 	source "$XDG_RUNTIME_DIR/ssh-agent.env" >/dev/null
     else
