@@ -34,6 +34,10 @@ antigen apply
 
 ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
 
+# Add cargo to path
+source $HOME/.cargo/env
+# Add nvim to path
+export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
 
 compinit
 # End of lines added by compinstall
@@ -74,4 +78,18 @@ detect_venv_dir() {
 nvim() {
     detect_venv_dir
     command nvim "$@"
+    # after nvim exits, deactivate venv:
+    if [[ "$VIRTUAL_ENV" != "" ]]; then
+	echo "Deactivating virtualenv"
+	deactivate
+    fi
+}
+
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
 }

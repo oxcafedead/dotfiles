@@ -24,12 +24,10 @@ Plug 'stevearc/aerial.nvim', {'tag': '*'}
 Plug 'github/copilot.vim'
 Plug 'LunarVim/bigfile.nvim'
 Plug 'tpope/vim-dispatch'
-Plug 'BurntSushi/ripgrep'
 Plug 'nvim-lua/plenary.nvim', {'tag': '*'}
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'terrortylor/nvim-comment'
 Plug 'folke/todo-comments.nvim'
-Plug 'elzr/vim-json'
 " Debug
 Plug 'michaelb/sniprun', { 'tag': '*', 'do': 'sh ./install.sh' }
 Plug 'puremourning/vimspector'
@@ -284,8 +282,6 @@ if executable('win32yank.exe')
 				\}
 endif
 
-let g:vim_json_syntax_conceal = 0
-
 " Spelling! Very important for such people like me who can't spell
 autocmd BufRead,BufNewFile *.md,COMMIT_EDITMSG setlocal spell spelllang=en_us
 
@@ -302,8 +298,7 @@ let g:dispatch_compilers = {
 			\ 'python -m pytest': 'pytest',
 			\ 'python3 -m pytest': 'pytest' }
 
-" Finally, exrc
-set exrc
+" Useful utilities
 
 function! CloseOtherBuffers()
 	let current_buffer = bufnr('%')
@@ -314,3 +309,32 @@ function! CloseOtherBuffers()
 endfunction
 
 command! CloseOtherBuffers :call CloseOtherBuffers()
+
+function! DiagnosticsToQuickfix()
+lua << EOF
+	-- get diagnostics from the current buffer
+	local diagnostics = vim.diagnostic.get(0)
+	-- convert to quickfix list
+	local qflist = {}
+	for _, diagnostic in ipairs(diagnostics) do
+		local bufnr = diagnostic.bufnr
+		local filename = vim.api.nvim_buf_get_name(bufnr)
+		table.insert(qflist, {
+			filename = filename,
+			lnum = diagnostic.lnum,
+			col = diagnostic.col,
+			text = diagnostic.message,
+			type = diagnostic.severity,
+		})
+	end
+	-- set quickfix list
+	vim.fn.setqflist(qflist)
+	-- show quickfix window
+	vim.cmd('copen')
+EOF
+endfunction
+
+command! DiagnosticsCurrentFocus :call DiagnosticsToQuickfix()
+
+" Finally, exrc
+set exrc
