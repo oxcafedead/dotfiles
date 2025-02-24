@@ -26,7 +26,7 @@ Plug 'LunarVim/bigfile.nvim'
 Plug 'tpope/vim-dispatch'
 Plug 'nvim-lua/plenary.nvim', {'tag': '*'}
 Plug 'nvim-telescope/telescope.nvim'
-Plug 'terrortylor/nvim-comment'
+Plug 'tpope/vim-commentary'
 Plug 'folke/todo-comments.nvim'
 " Debug
 Plug 'michaelb/sniprun', { 'tag': '*', 'do': 'sh ./install.sh' }
@@ -131,7 +131,6 @@ require'lspconfig'.basedpyright.setup {
 	},
 }
 
-require('nvim_comment').setup()
 require('todo-comments').setup()
 
 
@@ -170,7 +169,7 @@ require'lint'.linters_by_ft = {
 local conform = require'conform'
 conform.setup {
 	formatters_by_ft = {
-		javascript = { { "prettierd", "prettier" }, { "eslint_d", "eslint" } },
+		javascript = { { "prettierd", "prettier", "eslint_d", "eslint", stop_after_first = true } },
 		python = { "autopep8", "ruff_fix", "ruff_format", "ruff_organize_imports" },
 	},
 }

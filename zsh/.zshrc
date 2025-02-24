@@ -43,14 +43,7 @@ compinit
 # End of lines added by compinstall
 
 # SSH
-if ! pgrep -u "$USER" ssh-agent > /dev/null; then
-    ssh-agent > "$XDG_RUNTIME_DIR/ssh-agent.env"
-    if [[ -f "$XDG_RUNTIME_DIR/ssh-agent.env" ]]; then
-	source "$XDG_RUNTIME_DIR/ssh-agent.env" >/dev/null
-    else
-	echo "Error: ssh-agent.env file not found."
-    fi
-fi
+eval `keychain --eval --agents 'ssh,gpg' --nogui -Q -q`
 
 # Python development pain here:
 # Wrap nvim command to source venv if there is venv detected in the current directory

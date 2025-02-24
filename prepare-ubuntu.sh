@@ -16,6 +16,7 @@ sudo apt-get update
 sudo apt-get install npm neovim git zsh ripgrep python3-pip podman \
 	python3-venv \
 	gcc lua5.3 \
+	keychain \
 	-y
 
 mkdir ~/globalvenvs
