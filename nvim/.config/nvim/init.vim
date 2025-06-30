@@ -169,8 +169,9 @@ require'lint'.linters_by_ft = {
 local conform = require'conform'
 conform.setup {
 	formatters_by_ft = {
-		javascript = { { "prettierd", "prettier", "eslint_d", "eslint", stop_after_first = true } },
+		javascript = { "prettierd", "prettier", "eslint_d", "eslint" },
 		python = { "autopep8", "ruff_fix", "ruff_format", "ruff_organize_imports" },
+		haskell = { "fourmolu" },
 	},
 }
 vim.g.auto_conform = 1
@@ -294,6 +295,7 @@ let test#strategy = "dispatch"
 let g:dispatch_compilers = {
 			\ 'vitest': 'node_modules/.bin/vitest',
 			\ 'pytest': 'pytest',
+			\ 'ruff': 'pylint',
 			\ 'python -m pytest': 'pytest',
 			\ 'python3 -m pytest': 'pytest' }
 

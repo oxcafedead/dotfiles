@@ -86,3 +86,13 @@ function y() {
 	fi
 	rm -f -- "$tmp"
 }
+
+export EDITOR=nvim
+
+function decode_jwt() {
+    JWT=$(cat -)
+    echo "$JWT" | awk -F. '{print $2}' | base64 --decode | jq .
+}
+
+# Playground...
+[ -f "/home/art/.ghcup/env" ] && . "/home/art/.ghcup/env" # ghcup-env
