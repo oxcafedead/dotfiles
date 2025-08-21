@@ -39,6 +39,11 @@ source $HOME/.cargo/env
 # Add nvim to path
 export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
 
+# Add .local/bin to path
+if [[ -d "$HOME/.local/bin" ]]; then
+    export PATH="$HOME/.local/bin:$PATH"
+fi
+
 compinit
 # End of lines added by compinstall
 
@@ -96,3 +101,13 @@ function decode_jwt() {
 
 # Playground...
 [ -f "/home/art/.ghcup/env" ] && . "/home/art/.ghcup/env" # ghcup-env
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - zsh)"
+eval "$(pyenv virtualenv-init -)"
