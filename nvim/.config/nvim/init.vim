@@ -28,6 +28,7 @@ Plug 'nvim-lua/plenary.nvim', {'tag': '*'}
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'tpope/vim-commentary'
 Plug 'folke/todo-comments.nvim'
+Plug 'aklt/plantuml-syntax'
 " Debug
 Plug 'michaelb/sniprun', { 'tag': '*', 'do': 'sh ./install.sh' }
 Plug 'puremourning/vimspector'
@@ -46,7 +47,6 @@ Plug 'lifepillar/vim-solarized8', {'branch': 'neovim'}
 Plug 'f-person/auto-dark-mode.nvim'
 
 " Dispatch comiple plugin
-Plug '5long/pytest-vim-compiler'
 Plug 'oxcafedead/vitest-vim-compiler'
 call plug#end()
 
@@ -55,6 +55,7 @@ call plug#end()
 set number
 set relativenumber
 set nowrap
+set statusline=%<%f\ %h%m%r%{FugitiveStatusline()}%=%-14.(%l,%c%V%)\ %P
 
 set termguicolors
 colorscheme solarized8
@@ -168,8 +169,17 @@ require'lint'.linters_by_ft = {
 }
 local conform = require'conform'
 conform.setup {
+	formatters = {
+		biome = {
+			cwd = require'conform.util'.root_file({ 'biome.json', 'biome.config.js' }),
+			require_cwd = true,
+		},
+	},
 	formatters_by_ft = {
-		javascript = { "prettierd", "prettier", "eslint_d", "eslint" },
+		javascript = { "biome", "prettierd", "prettier", "eslint_d", "eslint", stop_after_first = true, },
+		typecript = { "biome", "prettierd", "prettier", "eslint_d", "eslint", stop_after_first = true, },
+		typescriptreact = { "biome", "prettierd", "prettier", "eslint_d", "eslint", stop_after_first = true, },
+		json = { "biome", "prettierd", "prettier", stop_after_first = true, },
 		python = { "autopep8", "ruff_fix", "ruff_format", "ruff_organize_imports" },
 		haskell = { "fourmolu" },
 	},
@@ -216,7 +226,6 @@ lua << EOF
 require("coverage").setup({})
 EOF
 nmap <leader>cs :CoverageShow<CR>
-nmap <leader>cc :CoverageToggle<CR>
 nmap <leader>cl :CoverageLoad<CR>
 
 " Useful functions of mine, utils
@@ -294,7 +303,6 @@ let test#strategy = "dispatch"
 
 let g:dispatch_compilers = {
 			\ 'vitest': 'node_modules/.bin/vitest',
-			\ 'pytest': 'pytest',
 			\ 'ruff': 'pylint',
 			\ 'python -m pytest': 'pytest',
 			\ 'python3 -m pytest': 'pytest' }
