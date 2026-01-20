@@ -1,3 +1,4 @@
+require("syntaxinit")
 require("lspinit")
 require("telescopeinit")
 require("lintinit")
