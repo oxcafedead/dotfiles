@@ -1,0 +1,4 @@
+require("lspinit")
+require("telescopeinit")
+require("lintinit")
+require("diagnosticsinit")

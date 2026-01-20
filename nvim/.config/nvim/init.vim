@@ -4,19 +4,14 @@ let g:netrw_preview   = 1
 let g:netrw_winsize   = 30
 
 call plug#begin(stdpath('data') . '/plugged')
-" LSP Support & linting
-Plug 'hrsh7th/nvim-cmp'
-Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'L3MON4D3/LuaSnip'
-Plug 'williamboman/mason.nvim'
-Plug 'williamboman/mason-lspconfig.nvim'
+Plug 'williamboman/mason.nvim', {'tag': 'v2.*'}
 Plug 'rshkarin/mason-nvim-lint'
-Plug 'neovim/nvim-lspconfig'
-Plug 'VonHeikemen/lsp-zero.nvim', {'branch': 'v3.x'}
+Plug 'neovim/nvim-lspconfig', {'tag': 'v2.*'}
 Plug 'mfussenegger/nvim-lint'
 Plug 'stevearc/conform.nvim'
 Plug 'ThePrimeagen/refactoring.nvim'
-" Etc
+
 Plug 'tpope/vim-dotenv'
 Plug 'tpope/vim-fugitive'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -29,25 +24,22 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'tpope/vim-commentary'
 Plug 'folke/todo-comments.nvim'
 Plug 'aklt/plantuml-syntax'
-" Debug
+
 Plug 'michaelb/sniprun', { 'tag': '*', 'do': 'sh ./install.sh' }
 Plug 'puremourning/vimspector'
 Plug 'oxcafedead/vimyac'
 
-" Tests
 Plug 'vim-test/vim-test'
-" Coverage
 Plug 'google/vim-maktaba'
 Plug 'andythigpen/nvim-coverage'
 Plug 'google/vim-glaive'
 
-" Colors and visual
 Plug 'rose-pine/neovim'
 Plug 'lifepillar/vim-solarized8', {'branch': 'neovim'}
 Plug 'f-person/auto-dark-mode.nvim'
 
-" Dispatch comiple plugin
 Plug 'oxcafedead/vitest-vim-compiler'
+Plug 'oxcafedead/ruff-compiler-plugin'
 call plug#end()
 
 " Visual and UI / mappings
@@ -86,125 +78,16 @@ nnoremap <leader>P "+P
 " Language support, refactoring...
 
 lua << EOF
--- Treesitter
-require'nvim-treesitter.configs'.setup {
-	ensure_installed = { "c", "java", "javascript", "lua", "vim", "vimdoc", "query", "http", "json" },
-	auto_install = true,
-	highlight = {
-		enable = true,
-	},
-	indent = {
-		enable = true,
-	},
-}
-require'aerial'.setup {
-	-- optionally use on_attach to set keymaps when aerial has attached to a buffer
-	on_attach = function(bufnr)
-	-- Jump forwards/backwards with '{' and '}'
-	vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
-	vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
-	end,
-}
-vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
--- LSP
-local lsp_zero = require('lsp-zero')
-lsp_zero.on_attach(function(client, bufnr)
-lsp_zero.default_keymaps({buffer = bufnr, preserve_mappings = false}) 
-end)
-require'mason'.setup {}
-require'mason-lspconfig'.setup {
-	ensure_installed = {'vimls'},
-	handlers = {
-		lsp_zero.default_setup,
-	},
-}
-require'mason-nvim-lint'.setup {
-	-- ensure_installed = {'eslint_d', 'ruff'}, -- will be set manually
-}
-require'lspconfig'.basedpyright.setup {
-	settings = {
-		basedpyright = {
-			analysis = {
-				-- turn off annoying strict mode
-				typeCheckingMode = "basic",
-			},
-		},
-	},
-}
-
-require('todo-comments').setup()
-
-
--- Telescope
-local telescope = require("telescope")
-local telescopeConfig = require("telescope.config")
-
-telescope.setup {
-	defaults = {
-		vimgrep_arguments = {
-			'rg',
-			'--color=never',
-			'--no-heading',
-			'--with-filename',
-			'--line-number',
-			'--column',
-			'--smart-case',
-			'--hidden',
-			'--glob',
-			'!**/.git/*',
-		},
-	},
-	pickers = {
-		find_files = {
-			find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*", },
-		},
-	},	
-}
-
-
-require'lint'.linters_by_ft = {
-	javascript = {'eslint_d'},
-	-- python = {'ruff'}, -- ruff linter automatically registers as LSP and duplicates the linting
-	sh = {'shellcheck'},
-}
-local conform = require'conform'
-conform.setup {
-	formatters = {
-		biome = {
-			cwd = require'conform.util'.root_file({ 'biome.json', 'biome.config.js' }),
-			require_cwd = true,
-		},
-	},
-	formatters_by_ft = {
-		javascript = { "biome", "prettierd", "prettier", "eslint_d", "eslint", stop_after_first = true, },
-		typecript = { "biome", "prettierd", "prettier", "eslint_d", "eslint", stop_after_first = true, },
-		typescriptreact = { "biome", "prettierd", "prettier", "eslint_d", "eslint", stop_after_first = true, },
-		json = { "biome", "prettierd", "prettier", stop_after_first = true, },
-		python = { "autopep8", "ruff_fix", "ruff_format", "ruff_organize_imports" },
-		haskell = { "fourmolu" },
-	},
-}
-vim.g.auto_conform = 1
-function Conform()
-	-- by default, also auto conform
-	if vim.b.auto_conform == 1 or ( vim.b.auto_conform == nil and vim.g.auto_conform == 1 ) then
-		conform.format({ bufnr = vim.api.nvim_get_current_buf(), lsp_format = "fallback" })
-	end
-end
-function ToggleAutoConform()
-	if vim.b.auto_conform == 1 or vim.b.auto_conform == nil then
-		vim.b.auto_conform = 0
-		print('AutoConform disabled')
-	else
-		vim.b.auto_conform = 1
-		print('AutoConform enabled')
-	end
-end
+require("init")
 EOF
+
+
 autocmd BufWritePost,BufReadPost,InsertLeave,TextChanged,TextChangedI * lua require'lint'.try_lint()
 command! AutoConform :lua ToggleAutoConform()
 command! Conform :lua Conform()
 autocmd BufWritePre * Conform
+
+
 
 " Debugger func...
 " let g:vimspector_enable_mappings = 'HUMAN'
@@ -303,7 +186,8 @@ let test#strategy = "dispatch"
 
 let g:dispatch_compilers = {
 			\ 'vitest': 'node_modules/.bin/vitest',
-			\ 'ruff': 'pylint',
+			\ 'ruff': 'ruff',
+                        \ 'mypy': 'pytest',
 			\ 'python -m pytest': 'pytest',
 			\ 'python3 -m pytest': 'pytest' }
 
@@ -318,32 +202,6 @@ function! CloseOtherBuffers()
 endfunction
 
 command! CloseOtherBuffers :call CloseOtherBuffers()
-
-function! DiagnosticsToQuickfix()
-lua << EOF
-	-- get diagnostics from the current buffer
-	local diagnostics = vim.diagnostic.get(0)
-	-- convert to quickfix list
-	local qflist = {}
-	for _, diagnostic in ipairs(diagnostics) do
-		local bufnr = diagnostic.bufnr
-		local filename = vim.api.nvim_buf_get_name(bufnr)
-		table.insert(qflist, {
-			filename = filename,
-			lnum = diagnostic.lnum,
-			col = diagnostic.col,
-			text = diagnostic.message,
-			type = diagnostic.severity,
-		})
-	end
-	-- set quickfix list
-	vim.fn.setqflist(qflist)
-	-- show quickfix window
-	vim.cmd('copen')
-EOF
-endfunction
-
-command! DiagnosticsCurrentFocus :call DiagnosticsToQuickfix()
 
 " Finally, exrc
 set exrc
