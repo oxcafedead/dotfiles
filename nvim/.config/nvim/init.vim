@@ -4,40 +4,40 @@ let g:netrw_preview   = 1
 let g:netrw_winsize   = 30
 
 call plug#begin(stdpath('data') . '/plugged')
-Plug 'L3MON4D3/LuaSnip'
+Plug 'neovim/nvim-lspconfig', {'tag': 'v2.*'}
+Plug 'stevearc/conform.nvim', {'tag': 'v9.*'}
 Plug 'williamboman/mason.nvim', {'tag': 'v2.*'}
 Plug 'rshkarin/mason-nvim-lint'
-Plug 'neovim/nvim-lspconfig', {'tag': 'v2.*'}
 Plug 'mfussenegger/nvim-lint'
-Plug 'stevearc/conform.nvim'
+
 Plug 'ThePrimeagen/refactoring.nvim'
 
 Plug 'tpope/vim-dotenv'
 Plug 'tpope/vim-fugitive'
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'stevearc/aerial.nvim', {'tag': '*'}
-Plug 'github/copilot.vim'
-Plug 'LunarVim/bigfile.nvim'
-Plug 'tpope/vim-dispatch'
-Plug 'nvim-lua/plenary.nvim', {'tag': '*'}
-Plug 'nvim-telescope/telescope.nvim'
 Plug 'tpope/vim-commentary'
-Plug 'folke/todo-comments.nvim'
-Plug 'aklt/plantuml-syntax'
+Plug 'tpope/vim-dispatch'
 
-Plug 'michaelb/sniprun', { 'tag': '*', 'do': 'sh ./install.sh' }
+Plug 'github/copilot.vim'
+
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate', 'tag': '*'}
+Plug 'stevearc/aerial.nvim', {'tag': 'v3.*'}
+Plug 'LunarVim/bigfile.nvim'
+
+Plug 'nvim-lua/plenary.nvim', {'tag': '*'} " required by telescope and nvim-coverage
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'folke/todo-comments.nvim'
+
+Plug 'michaelb/sniprun', { 'tag': 'v1.*', 'do': 'sh ./install.sh' }
 Plug 'puremourning/vimspector'
-Plug 'oxcafedead/vimyac'
+Plug 'oxcafedead/vimyac', {'tag': 'v1.*'}
 
 Plug 'vim-test/vim-test'
-Plug 'google/vim-maktaba'
 Plug 'andythigpen/nvim-coverage'
-Plug 'google/vim-glaive'
 
-Plug 'rose-pine/neovim'
 Plug 'lifepillar/vim-solarized8', {'branch': 'neovim'}
 Plug 'f-person/auto-dark-mode.nvim'
 
+Plug 'aklt/plantuml-syntax'
 Plug 'oxcafedead/vitest-vim-compiler'
 Plug 'oxcafedead/ruff-compiler-plugin'
 call plug#end()

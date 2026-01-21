@@ -22,7 +22,6 @@ conform.setup {
 }
 vim.g.auto_conform = 1
 function Conform()
-	-- by default, also auto conform
 	if vim.b.auto_conform == 1 or (vim.b.auto_conform == nil and vim.g.auto_conform == 1) then
 		conform.format({ bufnr = vim.api.nvim_get_current_buf(), lsp_format = "fallback" })
 	end
