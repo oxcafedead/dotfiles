@@ -121,3 +121,6 @@ fpath=($HOME/.zfunc $fpath)
 if [ -f "$HOME/.local/share/skim/shell/key-bindings.zsh" ]; then
 	source "$HOME/.local/share/skim/shell/key-bindings.zsh"
 fi
+
+# opencode
+export PATH=/home/art/.opencode/bin:$PATH
