@@ -17,7 +17,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dispatch'
 
-Plug 'github/copilot.vim'
+" Plug 'github/copilot.vim'
 
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate', 'tag': '*'}
 Plug 'stevearc/aerial.nvim', {'tag': 'v3.*'}

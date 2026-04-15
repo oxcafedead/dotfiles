@@ -14,6 +14,9 @@ autoload -Uz compinit
 autoload -U colors && colors
 PS1='%~: '
 
+export LS_COLORS="di=38;5;33:ln=38;5;37:so=38;5;136:pi=38;5;136:ex=38;5;166:bd=38;5;136:cd=38;5;136:su=38;5;124:sg=38;5;136:tw=38;5;136:ow=38;5;136:st=38;5;136:mi=38;5;124:or=38;5;166:ca=38;5;124:mh=38;5;166:do=38;5;33:fi=0:rs=0"
+alias ls='ls --color=auto'
+
 
 # Only for WSL
 if [ -f /etc/wsl.conf ]; then
