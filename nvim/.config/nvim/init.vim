@@ -5,7 +5,7 @@ let g:netrw_winsize   = 30
 
 call plug#begin(stdpath('data') . '/plugged')
 Plug 'neovim/nvim-lspconfig', {'tag': 'v2.*'}
-Plug 'stevearc/conform.nvim', {'tag': 'v9.*'}
+Plug 'stevearc/conform.nvim'
 Plug 'williamboman/mason.nvim', {'tag': 'v2.*'}
 Plug 'rshkarin/mason-nvim-lint'
 Plug 'mfussenegger/nvim-lint'

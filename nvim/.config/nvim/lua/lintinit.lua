@@ -5,19 +5,15 @@ require 'lint'.linters_by_ft = {
 }
 local conform = require 'conform'
 conform.setup {
-	formatters = {
-		biome = {
-			cwd = require 'conform.util'.root_file({ 'biome.json', 'biome.config.js' }),
-			require_cwd = true,
-		},
-	},
+	stop_after_first = true,
 	formatters_by_ft = {
-		javascript = { "biome", "prettierd", "prettier", "eslint_d", "eslint", stop_after_first = true, },
-		typecript = { "biome", "prettierd", "prettier", "eslint_d", "eslint", stop_after_first = true, },
-		typescriptreact = { "biome", "prettierd", "prettier", "eslint_d", "eslint", stop_after_first = true, },
-		json = { "biome", "prettierd", "prettier", stop_after_first = true, },
-		python = { "autopep8", "ruff_fix", "ruff_format", "ruff_organize_imports" },
-		haskell = { "fourmolu" },
+		javascript = { "oxfmt", "oxlint", "biome", "prettierd", "prettier", "eslint_d", "eslint", stop_after_first = true, },
+		typescript = { "oxfmt", "oxlint", "biome", "prettierd", "prettier", "eslint_d", "eslint", stop_after_first = true, },
+		typescriptreact = { "oxfmt", "oxlint", "biome", "prettierd", "prettier", "eslint_d", "eslint", stop_after_first = true, },
+		json = { "oxfmt", "oxlint", "biome", "prettierd", "prettier", stop_after_first = true, },
+		jsonc = { "oxfmt", "oxlint", "biome", "prettierd", "prettier", stop_after_first = true, },
+		python = { "autopep8", "ruff_fix", "ruff_format", "ruff_organize_imports", stop_after_first = true, },
+		haskell = { "fourmolu", stop_after_first = true, },
 	},
 }
 vim.g.auto_conform = 1
