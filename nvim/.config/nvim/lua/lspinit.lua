@@ -27,7 +27,7 @@ function LspInfo()
 end
 
 vim.cmd('command! LspInfo lua LspInfo()')
-vim.cmd('command! LspLog tabnew ' .. vim.lsp.get_log_path())
+vim.cmd('command! LspLog tabnew ' .. vim.lsp.log.get_filename())
 
 local servers = { 'vimls', 'lua_ls', 'ts_ls', 'ty' }
 for _, server in ipairs(servers) do
